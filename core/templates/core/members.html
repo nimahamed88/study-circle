@@ -1,0 +1,79 @@
+{% extends "core/base.html" %}
+
+{% block title %}Members — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+
+    <div class="container">
+
+        <p class="eyebrow">PEOPLE</p>
+
+        <h1>Members</h1>
+
+        <p>
+            Members of the Neuroscience Study Circle contributing to
+            discussions, presentations, and interdisciplinary activities.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container speaker-grid">
+
+        {% for member in members %}
+
+        <a
+            href="{% url 'member_detail' member.slug %}"
+            class="speaker-card"
+        >
+
+            {% if member.photo %}
+
+            <img
+                src="{{ member.photo.url }}"
+                alt="{{ member.name }}"
+                class="speaker-card-photo"
+            >
+
+            {% else %}
+
+            <div class="speaker-card-photo speaker-placeholder">
+                {{ member.name|first|upper }}
+            </div>
+
+            {% endif %}
+
+
+            <div class="speaker-card-info">
+
+                <h2>{{ member.name }}</h2>
+
+                {% if member.title %}
+                <p>{{ member.title }}</p>
+                {% endif %}
+
+                <span>
+                    View profile →
+                </span>
+
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <p>No members have been added yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

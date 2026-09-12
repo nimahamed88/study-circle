@@ -1,0 +1,223 @@
+{% extends "core/base.html" %}
+{% load tz %}
+
+{% block title %}{{ session.title }} — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+
+    <div class="container session-header">
+
+        <div class="session-header-main">
+
+            <p class="eyebrow">
+                {{ session.get_session_type_display|upper }}
+            </p>
+
+            <h1>
+                {{ session.title }}
+            </h1>
+
+        </div>
+
+
+        {% if session.speakers.all %}
+    <div class="session-speakers">
+
+        <span class="session-speaker-label">
+            SPEAKERS
+        </span>
+
+        <div class="session-speakers-list">
+
+            {% for speaker in session.speakers.all %}
+
+            <a
+                href="{% url 'member_detail' speaker.slug %}"
+                class="session-speaker"
+            >
+
+                {% if speaker.photo %}
+
+                <img
+                    src="{{ speaker.photo.url }}"
+                    alt="{{ speaker.name }}"
+                    class="session-speaker-photo"
+                >
+
+                {% else %}
+
+                <div class="session-speaker-placeholder">
+                    {{ speaker.name|first|upper }}
+                </div>
+
+                {% endif %}
+
+                <strong>
+                    {{ speaker.name }}
+                </strong>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+{% endif %}
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container session-detail">
+
+        <div class="session-meta">
+
+            <div>
+                <span class="meta-label">DATE</span>
+
+                <strong>
+                    {{ session.start_time|localtime|date:"l, d F Y" }}
+                </strong>
+            </div>
+
+
+            <div>
+                <span class="meta-label">TIME</span>
+
+                <strong>
+                    {{ session.start_time|localtime|date:"H:i" }}
+                    –
+                    {{ session.end_time|localtime|date:"H:i" }}
+                    {{ session.start_time|localtime|date:"T" }}
+                </strong>
+            </div>
+
+
+            <div>
+                <span class="meta-label">LOCATION</span>
+
+                <strong>
+                    {{ session.room }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        {% if session.subgroups.all %}
+
+        <div class="session-subgroups">
+
+            <span class="meta-label">
+                SUBGROUPS
+            </span>
+
+            <div class="subgroup-tags">
+
+                {% for subgroup in session.subgroups.all %}
+
+                <a
+                    href="{% url 'subgroup_detail' subgroup.slug %}"
+                    class="subgroup-tag"
+                >
+                    {{ subgroup.name }}
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        {% if session.description %}
+
+        <div class="session-description">
+
+            <p class="eyebrow">
+                ABOUT THIS SESSION
+            </p>
+
+            <div>
+                {{ session.description|linebreaks }}
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        {% if session.meeting_link or session.recording_url or session.pdf_file %}
+
+        <div class="session-resources">
+
+            {% if session.meeting_link %}
+
+            <a
+                href="{{ session.meeting_link }}"
+                class="button"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Join Google Meet
+            </a>
+
+            {% endif %}
+
+
+            {% if session.recording_url %}
+
+            <a
+                href="{{ session.recording_url }}"
+                class="resource-link"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Watch Recording →
+            </a>
+
+            {% endif %}
+
+
+            {% if session.pdf_file %}
+
+            <a
+                href="{{ session.pdf_file.url }}"
+                class="resource-link"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Session PDF →
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="session-back">
+
+            <a
+                href="{% url 'programme' %}"
+                class="text-link"
+            >
+                ← Back to Programme
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

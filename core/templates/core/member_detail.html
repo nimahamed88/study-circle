@@ -1,0 +1,247 @@
+{% extends "core/base.html" %}
+{% load tz %}
+
+{% block title %}{{ member.name }} — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+
+<!-- =========================================================
+     MEMBER HEADER
+     ========================================================= -->
+
+<section class="page-header">
+
+    <div class="container member-profile-header">
+
+        <div class="member-profile-info">
+
+            <p class="eyebrow">MEMBER</p>
+
+            <h1>{{ member.name }}</h1>
+
+            {% if member.title %}
+            <p class="member-title">
+                {{ member.title }}
+            </p>
+            {% endif %}
+
+        </div>
+
+
+        {% if member.photo %}
+
+        <div class="member-profile-photo-wrapper">
+
+            <img
+                src="{{ member.photo.url }}"
+                alt="{{ member.name }}"
+                class="member-profile-photo"
+            >
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     MEMBER INFORMATION
+     ========================================================= -->
+
+<section class="section">
+
+    <div class="container member-profile">
+
+
+        <!-- ABOUT -->
+
+        {% if member.bio %}
+
+        <div class="member-profile-section">
+
+            <p class="eyebrow">
+                ABOUT
+            </p>
+
+            <div class="member-bio">
+                {{ member.bio|linebreaks }}
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- CONTACT -->
+
+        {% if member.email or member.instagram or member.linkedin %}
+
+        <div class="member-profile-section">
+
+            <p class="eyebrow">
+                CONTACT
+            </p>
+
+            <div class="member-contact-links">
+
+                {% if member.email %}
+
+                <a
+                    href="mailto:{{ member.email }}"
+                    class="member-contact-link"
+                >
+                    Email
+                </a>
+
+                {% endif %}
+
+
+                {% if member.instagram %}
+
+                <a
+                    href="{{ member.instagram }}"
+                    class="member-contact-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Instagram
+                </a>
+
+                {% endif %}
+
+
+                {% if member.linkedin %}
+
+                <a
+                    href="{{ member.linkedin }}"
+                    class="member-contact-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    LinkedIn
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- SUBGROUPS -->
+
+        {% if member.subgroups.all %}
+
+        <div class="member-profile-section">
+
+            <p class="eyebrow">
+                SUBGROUPS
+            </p>
+
+            <div class="member-subgroups">
+
+                {% for subgroup in member.subgroups.all %}
+
+                <a
+                    href="{% url 'subgroup_detail' subgroup.slug %}"
+                    class="subgroup-tag"
+                >
+                    {{ subgroup.name }}
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- PRESENTATIONS -->
+
+        <div class="member-profile-section">
+
+            <p class="eyebrow">
+                PRESENTATIONS
+            </p>
+
+            <div class="member-sessions">
+
+                {% for session in sessions %}
+
+                <a
+                    href="{% url 'session_detail' session.pk %}"
+                    class="member-session"
+                >
+
+                    <div class="member-session-main">
+
+                        <span class="member-session-date">
+                            {{ session.start_time|localtime|date:"l, d F Y" }}
+                        </span>
+
+                        <h2>
+                            {{ session.title }}
+                        </h2>
+
+                        <div class="member-session-meta">
+
+                            <span>
+                                {{ session.start_time|localtime|date:"H:i" }}
+                                –
+                                {{ session.end_time|localtime|date:"H:i" }}
+                                {{ session.start_time|localtime|date:"T" }}
+                            </span>
+
+                            <span>
+                                {{ session.get_session_type_display }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="member-session-arrow">
+                        →
+                    </span>
+
+                </a>
+
+                {% empty %}
+
+                <p class="empty-member-sessions">
+                    No presentations scheduled yet.
+                </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- BACK -->
+
+        <div class="member-profile-back">
+
+            <a
+                href="{% url 'members' %}"
+                class="text-link"
+            >
+                ← Back to Members
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+{% endblock %}

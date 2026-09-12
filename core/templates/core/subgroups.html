@@ -1,0 +1,103 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Subgroups — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+
+    <div class="container">
+
+        <p class="eyebrow">ORGANIZATION</p>
+
+        <h1>Subgroups</h1>
+
+        <p>
+            Thematic groups bringing members together for deeper discussions,
+            reading, and collaborative activities.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container subgroup-grid">
+
+        {% for subgroup in subgroups %}
+
+        <a
+            href="{% url 'subgroup_detail' subgroup.slug %}"
+            class="subgroup-card"
+        >
+
+            <div class="subgroup-card-info">
+
+                <p class="eyebrow">
+                    SUBGROUP
+                </p>
+
+                <h2>
+                    {{ subgroup.name }}
+                </h2>
+
+                {% if subgroup.description %}
+
+                <p>
+                    {{ subgroup.description }}
+                </p>
+
+                {% endif %}
+
+                {% if subgroup.head %}
+
+                <p class="subgroup-head">
+                    Head:
+                    <strong>{{ subgroup.head.name }}</strong>
+                </p>
+
+                {% endif %}
+
+                <span class="subgroup-card-link">
+                    View subgroup →
+                </span>
+
+            </div>
+
+
+            <div class="subgroup-card-icon">
+
+                {% if subgroup.slug == "cognitive-neuroscience-linguistic" %}
+                    <img src="{% static 'core/images/cognitive.png' %}" alt="">
+                {% elif subgroup.slug == "journal-club" %}
+                    <img src="{% static 'core/images/journalclub.png' %}" alt="">
+                {% elif subgroup.slug == "math-computational" %}
+                    <img src="{% static 'core/images/math.png' %}" alt="">
+                {% elif subgroup.slug == "neurobiology" %}
+                    <img src="{% static 'core/images/neuro.jpg' %}" alt="">
+                {% elif subgroup.slug == "philosophy" %}
+                    <img src="{% static 'core/images/philosophy.png' %}" alt="">
+                {% elif subgroup.slug == "physics-complex-systems" %}
+                    <img src="{% static 'core/images/physics.png' %}" alt="">
+                {% elif subgroup.slug == "psychologie-et-psychanalyse" %}
+                    <img src="{% static 'core/images/psychoanalysis.jpg' %}" alt="">
+                {% endif %}
+
+            </div>
+
+        </a>
+
+        {% empty %}
+
+        <p>No subgroups have been added yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

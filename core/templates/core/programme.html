@@ -1,0 +1,478 @@
+{% extends "core/base.html" %}
+{% load tz %}
+
+{% block title %}Programme — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+
+    <div class="container">
+
+        <p class="eyebrow">PROGRAMME</p>
+
+        <div class="programme-header">
+
+            <div>
+
+                <h1>Programme</h1>
+
+                <p>
+                    Talks, discussions, and extensive sessions of the
+                    Neuroscience Study Circle.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MONTHLY CALENDAR -->
+
+<section class="calendar-section">
+
+    <div class="container">
+
+        <div class="calendar-header">
+
+            <a
+                href="?month={{ previous_month }}&year={{ previous_year }}"
+                class="month-nav"
+            >
+                ← Previous
+            </a>
+
+            <h2>
+                {{ month_name|upper }} {{ year }}
+            </h2>
+
+            <a
+                href="?month={{ next_month }}&year={{ next_year }}"
+                class="month-nav"
+            >
+                Next →
+            </a>
+
+        </div>
+
+
+        <div class="calendar">
+
+            <!-- Weekday names -->
+
+            <div class="calendar-weekdays">
+
+                <div>MON</div>
+                <div>TUE</div>
+                <div>WED</div>
+                <div>THU</div>
+                <div>FRI</div>
+                <div>SAT</div>
+                <div>SUN</div>
+
+            </div>
+
+
+            <!-- Calendar weeks -->
+
+            {% for week in calendar_weeks %}
+
+            <div class="calendar-week">
+
+                {% for day in week %}
+
+                <div
+                    class="
+                        calendar-day
+                        {% if not day.is_current_month %}outside-month{% endif %}
+                        {% if day.is_today %}today{% endif %}
+                    "
+                >
+
+                    <div class="calendar-date">
+                        {{ day.date|date:"d" }}
+                    </div>
+
+
+                    <div class="calendar-events">
+
+                        {% for session in day.sessions %}
+
+                        <a
+                            href="{% url 'session_detail' session.pk %}"
+                            class="calendar-event"
+                        >
+
+                            <span class="calendar-event-time">
+                                {{ session.start_time|localtime|date:"H:i" }}
+                            </span>
+
+                            <span class="calendar-event-title">
+                                {{ session.title }}
+                            </span>
+
+                        </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- UPCOMING PROGRAMME -->
+
+<section class="programme-list-section">
+
+    <div class="container">
+
+        <div class="programme-list-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    NEXT
+                </p>
+
+                <h2>
+                    Upcoming Sessions
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        {% for session in upcoming_sessions %}
+
+        <div class="programme-item">
+
+            <div class="programme-time">
+
+                <strong>
+                    {{ session.start_time|localtime|date:"H:i" }}
+                </strong>
+
+                <span>–</span>
+
+                <strong>
+                    {{ session.end_time|localtime|date:"H:i" }}
+                </strong>
+
+                <small>
+                    {{ session.start_time|localtime|date:"T" }}
+                </small>
+
+
+                {% if session.speakers.all %}
+
+                <div class="programme-speakers">
+
+                    {% for speaker in session.speakers.all %}
+
+                    <a
+                        href="{% url 'member_detail' speaker.slug %}"
+                        class="programme-speaker"
+                    >
+
+                        {% if speaker.photo %}
+
+                        <img
+                            src="{{ speaker.photo.url }}"
+                            alt="{{ speaker.name }}"
+                            class="programme-speaker-photo"
+                        >
+
+                        {% else %}
+
+                        <div class="programme-speaker-placeholder">
+                            {{ speaker.name|first|upper }}
+                        </div>
+
+                        {% endif %}
+
+                        <span>
+                            {{ speaker.name }}
+                        </span>
+
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="programme-content">
+
+                <p class="session-type">
+                    {{ session.get_session_type_display|upper }}
+                </p>
+
+
+                <h2>
+
+                    <a
+                        href="{% url 'session_detail' session.pk %}"
+                        class="session-title-link"
+                    >
+                        {{ session.title }}
+                    </a>
+
+                </h2>
+
+
+                {% if session.speaker %}
+
+                <p class="speaker">
+
+                    <a
+                        href="{% url 'member_detail' session.speaker.slug %}"
+                        class="speaker-link"
+                    >
+                        {{ session.speaker.name }}
+                    </a>
+
+                </p>
+
+                {% endif %}
+
+
+                <p class="room">
+                    {{ session.room }}
+                </p>
+
+
+                {% if session.subgroups.all %}
+
+                <div class="subgroup-tags">
+
+                    {% for subgroup in session.subgroups.all %}
+
+                    <a
+                        href="{% url 'subgroup_detail' subgroup.slug %}"
+                        class="subgroup-tag"
+                    >
+                        {{ subgroup.name }}
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="programme-action">
+
+                <a
+                    href="{% url 'session_detail' session.pk %}"
+                    class="text-link"
+                >
+                    Details →
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p class="empty-programme">
+            No upcoming sessions.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- PREVIOUS PROGRAMME -->
+
+<section class="programme-list-section previous-sessions">
+
+    <div class="container">
+
+        <div class="programme-list-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    ARCHIVE
+                </p>
+
+                <h2>
+                    Previous Sessions
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        {% for session in previous_sessions %}
+
+        <div class="programme-item">
+
+            <div class="programme-time">
+
+                <strong>
+                    {{ session.start_time|localtime|date:"H:i" }}
+                </strong>
+
+                <span>–</span>
+
+                <strong>
+                    {{ session.end_time|localtime|date:"H:i" }}
+                </strong>
+
+                <small>
+                    {{ session.start_time|localtime|date:"T" }}
+                </small>
+
+
+                {% if session.speakers.all %}
+                <div class="programme-speakers">
+
+                    {% for speaker in session.speakers.all %}
+
+                    <a
+                        href="{% url 'member_detail' speaker.slug %}"
+                        class="programme-speaker"
+                    >
+
+                        {% if speaker.photo %}
+
+                        <img
+                            src="{{ speaker.photo.url }}"
+                            alt="{{ speaker.name }}"
+                            class="programme-speaker-photo"
+                        >
+
+                        {% else %}
+
+                        <div class="programme-speaker-placeholder">
+                            {{ speaker.name|first|upper }}
+                        </div>
+
+                        {% endif %}
+
+                        <span>
+                            {{ speaker.name }}
+                        </span>
+
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="programme-content">
+
+                <p class="session-type">
+                    {{ session.get_session_type_display|upper }}
+                </p>
+
+
+                <h2>
+
+                    <a
+                        href="{% url 'session_detail' session.pk %}"
+                        class="session-title-link"
+                    >
+                        {{ session.title }}
+                    </a>
+
+                </h2>
+
+
+                {% if session.speaker %}
+
+                <p class="speaker">
+
+                    <a
+                        href="{% url 'member_detail' session.speaker.slug %}"
+                        class="speaker-link"
+                    >
+                        {{ session.speaker.name }}
+                    </a>
+
+                </p>
+
+                {% endif %}
+
+
+                <p class="room">
+                    {{ session.room }}
+                </p>
+
+
+                {% if session.subgroups.all %}
+
+                <div class="subgroup-tags">
+
+                    {% for subgroup in session.subgroups.all %}
+
+                    <a
+                        href="{% url 'subgroup_detail' subgroup.slug %}"
+                        class="subgroup-tag"
+                    >
+                        {{ subgroup.name }}
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="programme-action">
+
+                <a
+                    href="{% url 'session_detail' session.pk %}"
+                    class="text-link"
+                >
+                    Details →
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

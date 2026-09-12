@@ -1,0 +1,122 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Home — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="hero-layout">
+
+            <div class="hero-content">
+
+                <p class="eyebrow">
+                    INTERDISCIPLINARY STUDY CIRCLE
+                </p>
+
+                <h1>
+                    Neuroscience<br>
+                    Study Circle
+                </h1>
+
+                <p class="hero-text">
+                    An interdisciplinary space for exploring the scientific,
+                    philosophical, and conceptual questions surrounding the study
+                    of the mind.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="{% url 'programme' %}" class="button">
+                        View Programme
+                    </a>
+                </div>
+
+            </div>
+
+
+            <div class="hero-logo">
+
+                <img
+                    src="{% static 'core/images/logo.jpg' %}"
+                    alt="Neuroscience Study Circle logo"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container two-column">
+
+        <div>
+            <p class="eyebrow">ABOUT</p>
+
+            <h2>
+                A space for interdisciplinary thinking.
+            </h2>
+        </div>
+
+        <div>
+
+            <p>
+                The Neuroscience Study Circle brings together people from
+                different academic backgrounds to discuss questions about
+                the mind, brain, consciousness, and scientific knowledge.
+            </p>
+
+            <p>
+                Our sessions combine scientific presentations, philosophical
+                discussion, and interdisciplinary exchange.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section upcoming">
+
+    <div class="container">
+
+        <p class="eyebrow">NEXT SESSION</p>
+
+        <div class="session-preview">
+
+            <div>
+
+                <p class="session-date">
+                    SATURDAY · 12 SEPTEMBER 2026
+                </p>
+
+                <h2>
+                    Scientific Approach / Philosophy of Science
+                </h2>
+
+                <p>
+                    Mohammad · 19:30–22:30 · Online
+                </p>
+
+            </div>
+
+            <a href="{% url 'programme' %}" class="text-link">
+                Programme →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

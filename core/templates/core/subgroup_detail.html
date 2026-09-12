@@ -1,0 +1,244 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ subgroup.name }} — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+
+{% load static %}
+
+<section class="page-header">
+
+    <div class="container subgroup-detail-header">
+
+        <div class="subgroup-detail-title">
+
+            <p class="eyebrow">
+                SUBGROUP
+            </p>
+
+            <h1>
+                {{ subgroup.name }}
+            </h1>
+
+            {% if subgroup.description %}
+            <p>
+                {{ subgroup.description }}
+            </p>
+            {% endif %}
+
+        </div>
+
+
+        <div class="subgroup-detail-icon">
+
+            {% if subgroup.slug == "cognitive-neuroscience-linguistic" %}
+                <img src="{% static 'core/images/cognitive.png' %}" alt="">
+            {% elif subgroup.slug == "journal-club" %}
+                <img src="{% static 'core/images/journalclub.png' %}" alt="">
+            {% elif subgroup.slug == "math-computational" %}
+                <img src="{% static 'core/images/math.png' %}" alt="">
+            {% elif subgroup.slug == "neurobiology" %}
+                <img src="{% static 'core/images/neuro.jpg' %}" alt="">
+            {% elif subgroup.slug == "philosophy" %}
+                <img src="{% static 'core/images/philosophy.png' %}" alt="">
+            {% elif subgroup.slug == "physics-complex-systems" %}
+                <img src="{% static 'core/images/physics.png' %}" alt="">
+            {% elif subgroup.slug == "psychoanalysis" %}
+                <img src="{% static 'core/images/psychoanalysis.jpg' %}" alt="">
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="container subgroup-detail">
+
+
+        <!-- HEAD -->
+
+        {% if subgroup.head %}
+
+        <div class="subgroup-section-block">
+
+            <p class="eyebrow">HEAD</p>
+
+            <a
+                href="{% url 'member_detail' subgroup.head.slug %}"
+                class="subgroup-person"
+            >
+
+                {% if subgroup.head.photo %}
+
+                <img
+                    src="{{ subgroup.head.photo.url }}"
+                    alt="{{ subgroup.head.name }}"
+                >
+
+                {% else %}
+
+                <div class="subgroup-person-placeholder">
+                    {{ subgroup.head.name|first|upper }}
+                </div>
+
+                {% endif %}
+
+                <div>
+
+                    <h2>
+                        {{ subgroup.head.name }}
+                    </h2>
+
+                    {% if subgroup.head.title %}
+                    <p>
+                        {{ subgroup.head.title }}
+                    </p>
+                    {% endif %}
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- MEMBERS -->
+
+        <div class="subgroup-section-block">
+
+            <p class="eyebrow">MEMBERS</p>
+
+            <div class="subgroup-members">
+
+                {% for member in subgroup.members.all %}
+
+                <a
+                    href="{% url 'member_detail' member.slug %}"
+                    class="subgroup-member"
+                >
+
+                    {% if member.photo %}
+
+                    <img
+                        src="{{ member.photo.url }}"
+                        alt="{{ member.name }}"
+                    >
+
+                    {% else %}
+
+                    <div class="subgroup-member-placeholder">
+                        {{ member.name|first|upper }}
+                    </div>
+
+                    {% endif %}
+
+                    <div>
+
+                        <h2>
+                            {{ member.name }}
+                        </h2>
+
+                        {% if member.title %}
+                        <p>
+                            {{ member.title }}
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                </a>
+
+                {% empty %}
+
+                <p>No members have been assigned yet.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTACT -->
+
+        {% if subgroup.email %}
+
+        <div class="subgroup-section-block">
+
+            <p class="eyebrow">CONTACT</p>
+
+            <a
+                href="mailto:{{ subgroup.email }}"
+                class="contact-email"
+            >
+                {{ subgroup.email }}
+            </a>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- RELATED SESSIONS -->
+
+        <div class="subgroup-section-block">
+
+            <p class="eyebrow">RELATED SESSIONS</p>
+
+            <div class="subgroup-sessions">
+
+                {% for session in sessions %}
+
+                <a
+                    href="{% url 'session_detail' session.pk %}"
+                    class="subgroup-session"
+                >
+
+                    <div>
+
+                        <span>
+                            {{ session.start_time|date:"d F Y" }}
+                        </span>
+
+                        <h2>
+                            {{ session.title }}
+                        </h2>
+
+                        {% if session.speaker %}
+
+                        <p>
+                            {{ session.speaker.name }}
+                        </p>
+
+                        {% endif %}
+
+                    </div>
+
+                    <span>→</span>
+
+                </a>
+
+                {% empty %}
+
+                <p>
+                    No sessions are currently associated with this subgroup.
+                </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+{% endblock %}
