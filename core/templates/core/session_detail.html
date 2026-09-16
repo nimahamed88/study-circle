@@ -155,54 +155,97 @@
         {% endif %}
 
 
-        {% if session.meeting_link or session.recording_url or session.pdf_file %}
+        {% if session.meeting_link or session.recording_url or session.pdf_file or session.resources.all %}
 
-        <div class="session-resources">
+<div class="session-resources">
 
-            {% if session.meeting_link %}
+    {% if session.meeting_link %}
 
-            <a
-                href="{{ session.meeting_link }}"
-                class="button"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                Join Google Meet
-            </a>
+    <a
+        href="{{ session.meeting_link }}"
+        class="button"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        Join Google Meet
+    </a>
 
-            {% endif %}
-
-
-            {% if session.recording_url %}
-
-            <a
-                href="{{ session.recording_url }}"
-                class="resource-link"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                Watch Recording →
-            </a>
-
-            {% endif %}
+    {% endif %}
 
 
-            {% if session.pdf_file %}
+    {% if session.recording_url %}
 
-            <a
-                href="{{ session.pdf_file.url }}"
-                class="resource-link"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                Session PDF →
-            </a>
+    <a
+        href="{{ session.recording_url }}"
+        class="resource-link"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        Watch Recording →
+    </a>
+
+    {% endif %}
+
+
+    {% if session.pdf_file %}
+
+    <a
+        href="{{ session.pdf_file.url }}"
+        class="resource-link"
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        Session PDF →
+    </a>
+
+    {% endif %}
+
+
+    {% if session.resources.all %}
+
+    <div class="session-external-resources">
+
+        <p class="eyebrow">
+            EXTERNAL RESOURCES
+        </p>
+
+        {% for resource in session.resources.all %}
+
+        <div class="session-external-resource">
+
+            <span class="meta-label">
+                {{ resource.get_resource_type_display|upper }}
+            </span>
+
+            <h3>
+                <a
+                    href="{{ resource.url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {{ resource.title }} →
+                </a>
+            </h3>
+
+            {% if resource.summary %}
+
+            <p>
+                {{ resource.summary }}
+            </p>
 
             {% endif %}
 
         </div>
 
-        {% endif %}
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endif %}
 
 
         <div class="session-back">
