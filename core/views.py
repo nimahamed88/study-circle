@@ -1,9 +1,10 @@
 import calendar
-from datetime import date
-
+from datetime import date, timezone as dt_timezone
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.utils.timezone import localtime
+from django.http import HttpResponse
+from django.urls import reverse
 from .models import Session, Speaker, Subgroup
 
 
@@ -24,6 +25,103 @@ def home(request):
             "next_session": next_session,
         },
     )
+
+def calendar_feed(request):
+    sessions = (
+        Session.objects
+        .filter(start_time__gt=timezone.now())
+        .prefetch_related("speakers", "subgroups")
+        .order_by("start_time")
+    )
+
+    def escape_ical(value):
+        if not value:
+            return ""
+
+        return (
+            str(value)
+            .replace("\\", "\\\\")
+            .replace(";", "\\;")
+            .replace(",", "\\,")
+            .replace("\r\n", "\\n")
+            .replace("\n", "\\n")
+            .replace("\r", "\\n")
+        )
+
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Neurosciensemble//Study Circle//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "X-WR-CALNAME:Neurosciensemble — Study Circle",
+        "X-WR-TIMEZONE:Europe/Paris",
+    ]
+
+    for session in sessions:
+        start_utc = session.start_time.astimezone(dt_timezone.utc)
+        end_utc = session.end_time.astimezone(dt_timezone.utc)
+
+        speakers = ", ".join(
+            speaker.name
+            for speaker in session.speakers.all()
+        )
+
+        description_parts = []
+
+        if session.description:
+            description_parts.append(session.description)
+
+        if speakers:
+            description_parts.append(
+                f"Speakers: {speakers}"
+            )
+
+        description_parts.append(
+            f"Session type: {session.get_session_type_display()}"
+        )
+
+        if session.meeting_link:
+            description_parts.append(
+                f"Google Meet: {session.meeting_link}"
+            )
+
+        session_url = request.build_absolute_uri(
+            reverse("session_detail", args=[session.pk])
+        )
+
+        description_parts.append(
+            f"Session page: {session_url}"
+        )
+
+        description = "\n\n".join(description_parts)
+
+        lines.extend([
+            "BEGIN:VEVENT",
+            f"UID:session-{session.pk}@neurosciensemble.org",
+            f"DTSTAMP:{timezone.now().astimezone(dt_timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTART:{start_utc.strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTEND:{end_utc.strftime('%Y%m%dT%H%M%SZ')}",
+            f"SUMMARY:{escape_ical(session.title)}",
+            f"DESCRIPTION:{escape_ical(description)}",
+            f"LOCATION:{escape_ical(session.room)}",
+            f"URL:{session_url}",
+            "END:VEVENT",
+        ])
+
+    lines.append("END:VCALENDAR")
+
+    response = HttpResponse(
+        "\r\n".join(lines) + "\r\n",
+        content_type="text/calendar; charset=utf-8",
+    )
+
+    response["Content-Disposition"] = (
+        'inline; filename="neurosciensemble.ics"'
+    )
+
+    return response
+
 
 
 def programme(request):
