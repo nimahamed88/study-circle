@@ -2,11 +2,28 @@ import calendar
 from datetime import date
 
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 from django.utils.timezone import localtime
-
 from .models import Session, Speaker, Subgroup
+
+
+
 def home(request):
-    return render(request, "core/home.html")
+    next_session = (
+        Session.objects
+        .filter(start_time__gt=timezone.now())
+        .prefetch_related("speakers")
+        .order_by("start_time")
+        .first()
+    )
+
+    return render(
+        request,
+        "core/home.html",
+        {
+            "next_session": next_session,
+        },
+    )
 
 
 def programme(request):

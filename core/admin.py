@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Speaker, Subgroup, Session
+from .models import Speaker, Subgroup, Session, SessionResource
 
 
 @admin.register(Speaker)
@@ -48,13 +48,15 @@ class SubgroupAdmin(admin.ModelAdmin):
     }
 
 
+class SessionResourceInline(admin.TabularInline):
+    model = SessionResource
+    extra = 1
+
+
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
     list_display = ("title", "start_time", "end_time", "session_type")
     list_filter = ("session_type",)
     ordering = ("start_time",)
     filter_horizontal = ("speakers", "subgroups")
-
-    ordering = (
-        "start_time",
-    )
+    inlines = (SessionResourceInline,)

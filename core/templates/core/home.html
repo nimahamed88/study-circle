@@ -91,29 +91,56 @@
 
         <p class="eyebrow">NEXT SESSION</p>
 
-        <div class="session-preview">
+        {% if next_session %}
 
-            <div>
+            <div class="session-preview">
 
-                <p class="session-date">
-                    SATURDAY · 12 SEPTEMBER 2026
-                </p>
+                <div>
 
-                <h2>
-                    Scientific Approach / Philosophy of Science
-                </h2>
+                    <p class="session-date">
+                        {{ next_session.start_time|date:"l · d F Y"|upper }}
+                    </p>
 
-                <p>
-                    Mohammad · 19:30–22:30 · Online
-                </p>
+                    <h2>
+                        <a href="{% url 'session_detail' next_session.pk %}">
+                            {{ next_session.title }}
+                        </a>
+                    </h2>
+
+                    <p>
+                        {% for speaker in next_session.speakers.all %}
+                            {{ speaker.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        ·
+                        {{ next_session.start_time|date:"H:i" }}–{{ next_session.end_time|date:"H:i" }}
+                        ·
+                        {{ next_session.room }}
+                    </p>
+
+                </div>
+
+                <a href="{% url 'programme' %}" class="text-link">
+                    Programme →
+                </a>
 
             </div>
 
-            <a href="{% url 'programme' %}" class="text-link">
-                Programme →
-            </a>
+        {% else %}
 
-        </div>
+            <div class="session-preview">
+
+                <div>
+                    <h2>No upcoming sessions</h2>
+                    <p>Check the programme for previous sessions and future updates.</p>
+                </div>
+
+                <a href="{% url 'programme' %}" class="text-link">
+                    Programme →
+                </a>
+
+            </div>
+
+        {% endif %}
 
     </div>
 

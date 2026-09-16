@@ -92,6 +92,7 @@ class Session(models.Model):
     SESSION_TYPES = [
         ("main", "Main Session"),
         ("extensive", "Extensive Session"),
+        ("journal_club", "Journal Club"),
     ]
 
     title = models.CharField(
@@ -148,6 +149,34 @@ class Session(models.Model):
 
     class Meta:
         ordering = ["start_time"]
+
+    def __str__(self):
+        return self.title
+class SessionResource(models.Model):
+    RESOURCE_TYPES = [
+        ("paper", "Paper"),
+        ("book", "Book"),
+        ("article", "Article"),
+        ("website", "Website"),
+        ("other", "Other"),
+    ]
+
+    session = models.ForeignKey(
+        Session,
+        on_delete=models.CASCADE,
+        related_name="resources",
+    )
+    title = models.CharField(max_length=250)
+    resource_type = models.CharField(
+        max_length=20,
+        choices=RESOURCE_TYPES,
+        default="paper",
+    )
+    url = models.URLField()
+    summary = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["resource_type", "title"]
 
     def __str__(self):
         return self.title
