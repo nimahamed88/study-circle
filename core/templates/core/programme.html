@@ -153,8 +153,8 @@
                 <h2>Neurosciensemble Calendar</h2>
 
                 <p>
-                    Download the official calendar to keep upcoming
-                    Neurosciensemble sessions in your calendar.
+                    Subscribe to the official Neurosciensemble calendar
+                    to keep upcoming sessions in your calendar.
                 </p>
 
             </div>
@@ -169,6 +169,25 @@
                     Download Calendar (.ics)
                 </a>
 
+            </div>
+
+        </div>
+
+        <div class="calendar-google">
+
+            <p class="eyebrow">GOOGLE CALENDAR</p>
+
+            <p>
+                To subscribe in Google Calendar, copy the calendar address
+                below and add it from <strong>Other calendars → From URL</strong>.
+            </p>
+
+            <div class="calendar-url">
+                <a
+                    href="{% url 'calendar_feed' %}"
+                >
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'calendar_feed' %}
+                </a>
             </div>
 
         </div>
