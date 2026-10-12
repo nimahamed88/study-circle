@@ -51,7 +51,7 @@ class SubgroupAdmin(admin.ModelAdmin):
 class SessionResourceInline(admin.TabularInline):
     model = SessionResource
     extra = 1
-
+    fields = ("title", "resource_type", "url", "file", "summary")
 
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
@@ -60,3 +60,4 @@ class SessionAdmin(admin.ModelAdmin):
     ordering = ("start_time",)
     filter_horizontal = ("speakers", "subgroups")
     inlines = (SessionResourceInline,)
+    exclude = ("pdf_file",)

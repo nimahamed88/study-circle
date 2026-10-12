@@ -1962,3 +1962,67 @@ body {
     }
 
 }
+
+/* Session resources — individual cards */
+
+.session-external-resources {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.session-external-resources > .eyebrow {
+    margin-bottom: 18px;
+}
+
+.session-external-resource {
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    background: #151d25;
+    border: 1px solid #2b3946;
+    border-left: 3px solid #9ac9ee;
+    border-radius: 8px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.session-external-resource:hover {
+    background: #1a2530;
+    border-color: #526a7d;
+    border-left-color: #9ac9ee;
+}
+
+.session-external-resource .meta-label {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #9ac9ee;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.session-external-resource h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.session-external-resource h3 a {
+    color: #edf1f5;
+    text-decoration: none;
+}
+
+.session-external-resource h3 a:hover {
+    color: #9ac9ee;
+}
+
+.session-external-resource p {
+    margin: 8px 0 0;
+    color: #aeb8c2;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+    .session-external-resource {
+        padding: 18px;
+    }
+}

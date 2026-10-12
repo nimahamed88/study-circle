@@ -155,8 +155,8 @@
         {% endif %}
 
 
-        {% if session.meeting_link or session.recording_url or session.pdf_file or session.resources.all %}
 
+        {% if session.meeting_link or session.recording_url or session.resources.all %}
 <div class="session-resources">
 
     {% if session.meeting_link %}
@@ -187,18 +187,6 @@
     {% endif %}
 
 
-    {% if session.pdf_file %}
-
-    <a
-        href="{{ session.pdf_file.url }}"
-        class="resource-link"
-        target="_blank"
-        rel="noopener noreferrer"
-    >
-        Session PDF →
-    </a>
-
-    {% endif %}
 
 
     {% if session.resources.all %}
@@ -211,33 +199,41 @@
 
         {% for resource in session.resources.all %}
 
-        <div class="session-external-resource">
+<div class="session-external-resource">
 
-            <span class="meta-label">
-                {{ resource.get_resource_type_display|upper }}
-            </span>
+    <span class="meta-label">
+        {{ resource.get_resource_type_display|upper }}
+    </span>
 
-            <h3>
-                <a
-                    href="{{ resource.url }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    {{ resource.title }} →
-                </a>
-            </h3>
+    <h3>
+        {% if resource.file %}
+            <a
+                href="{{ resource.file.url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {{ resource.title }} — Open resource ↗
+            </a>
+        {% elif resource.url %}
+            <a
+                href="{{ resource.url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {{ resource.title }} ↗
+            </a>
+        {% else %}
+            {{ resource.title }}
+        {% endif %}
+    </h3>
 
-            {% if resource.summary %}
+    {% if resource.summary %}
+        <p>{{ resource.summary }}</p>
+    {% endif %}
 
-            <p>
-                {{ resource.summary }}
-            </p>
+</div>
 
-            {% endif %}
-
-        </div>
-
-        {% endfor %}
+{% endfor %}
 
     </div>
 

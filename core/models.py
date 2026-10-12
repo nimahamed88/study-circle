@@ -154,7 +154,8 @@ class Session(models.Model):
         return self.title
 class SessionResource(models.Model):
     RESOURCE_TYPES = [
-        ("paper", "Paper"),
+        ("presentation", "Presentation"),
+	("paper", "Paper"),
         ("book", "Book"),
         ("article", "Article"),
         ("website", "Website"),
@@ -172,7 +173,12 @@ class SessionResource(models.Model):
         choices=RESOURCE_TYPES,
         default="paper",
     )
-    url = models.URLField()
+    url = models.URLField(blank=True)
+    file = models.FileField(
+        upload_to="sessions/resources/",
+        blank=True,
+        null=True,
+    )
     summary = models.TextField(blank=True)
 
     class Meta:
