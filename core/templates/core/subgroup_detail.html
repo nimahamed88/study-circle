@@ -184,6 +184,60 @@
 
         {% endif %}
 
+        
+        <!-- RELATED ESSAYS -->
+
+        {% if essays %}
+
+        <div class="subgroup-section-block">
+
+            <p class="eyebrow">ESSAYS</p>
+
+            <div class="subgroup-sessions">
+
+                {% for essay in essays %}
+
+                <a
+                    href="{% url 'essay_detail' essay.slug %}"
+                    class="subgroup-session"
+                >
+
+                    <div>
+
+                        {% if essay.published_at %}
+                        <span>
+                            {{ essay.published_at|date:"d F Y" }}
+                        </span>
+                        {% endif %}
+
+                        <h2>
+                            {{ essay.title }}
+                        </h2>
+
+                        <p>
+                            By {{ essay.author.name }}
+                            · {{ essay.reading_time }} min read
+                        </p>
+
+                        {% if essay.excerpt %}
+                        <p>
+                            {{ essay.excerpt }}
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                    <span>→</span>
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
 
         <!-- RELATED SESSIONS -->
 

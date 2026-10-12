@@ -162,6 +162,57 @@
 
         {% endif %}
 
+        
+        <!-- ESSAYS -->
+
+        {% if essays %}
+
+        <div class="member-profile-section">
+
+            <p class="eyebrow">
+                ESSAYS
+            </p>
+
+            <div class="member-sessions">
+
+                {% for essay in essays %}
+
+                <a
+                    href="{% url 'essay_detail' essay.slug %}"
+                    class="member-session"
+                >
+
+                    <div class="member-session-main">
+
+                        {% if essay.published_at %}
+                        <span class="member-session-date">
+                            {{ essay.published_at|date:"j F Y" }}
+                        </span>
+                        {% endif %}
+
+                        <h2>{{ essay.title }}</h2>
+
+                        {% if essay.excerpt %}
+                        <p>{{ essay.excerpt }}</p>
+                        {% endif %}
+
+                        <div class="member-session-meta">
+                            <span>{{ essay.reading_time }} min read</span>
+                        </div>
+
+                    </div>
+
+                    <span class="member-session-arrow">→</span>
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
 
         <!-- PRESENTATIONS -->
 

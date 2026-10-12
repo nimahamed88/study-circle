@@ -26,6 +26,11 @@ urlpatterns = [
         views.subgroup_detail,
         name="subgroup_detail",
     ),
-
+    path("essays/", views.essays, name="essays"),
+    path(
+        "essays/<slug:slug>/",
+        views.essay_detail,
+        name="essay_detail",
+    ),
     path("contact/", views.contact, name="contact"),
 ]

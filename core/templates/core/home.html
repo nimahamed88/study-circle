@@ -146,4 +146,85 @@
 
 </section>
 
+<section class="section latest-essays">
+    <div class="container">
+
+        <div class="section-heading-row">
+            <div>
+                <p class="eyebrow">THOUGHTS &amp; PERSPECTIVES</p>
+                <h2>Latest essays</h2>
+                <p class="section-intro">
+                    Essays exploring the mind, brain, and the questions connecting them.
+                </p>
+            </div>
+
+            <a href="{% url 'essays' %}" class="text-link">
+                All essays →
+            </a>
+        </div>
+
+        {% if latest_essays %}
+            <div class="essay-grid">
+                {% for essay in latest_essays %}
+                    <article class="essay-card">
+
+                        {% if essay.featured_image %}
+                            <a href="{% url 'essay_detail' essay.slug %}"
+                               class="essay-card-image-link">
+                                <img
+                                    src="{{ essay.featured_image.url }}"
+                                    alt="{{ essay.title }}"
+                                    class="essay-card-image"
+                                    loading="lazy"
+                                >
+                            </a>
+                        {% endif %}
+
+                        <div class="essay-card-content">
+
+                            <div class="essay-meta">
+                                {% if essay.published_at %}
+                                    <time datetime="{{ essay.published_at|date:'c' }}">
+                                        {{ essay.published_at|date:"j F Y" }}
+                                    </time>
+                                    <span aria-hidden="true">·</span>
+                                {% endif %}
+                                <span>{{ essay.reading_time }} min read</span>
+                            </div>
+
+                            <h3>
+                                <a href="{% url 'essay_detail' essay.slug %}">
+                                    {{ essay.title }}
+                                </a>
+                            </h3>
+
+                            {% if essay.excerpt %}
+                                <p class="essay-excerpt">{{ essay.excerpt }}</p>
+                            {% endif %}
+
+                            <p class="essay-author">
+                                By
+                                <a href="{% url 'member_detail' essay.author.slug %}">
+                                    {{ essay.author.name }}
+                                </a>
+                            </p>
+
+                            <a href="{% url 'essay_detail' essay.slug %}"
+                               class="essay-read-more">
+                                Read essay →
+                            </a>
+
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="section-intro">
+                Our first essays will appear here soon.
+            </p>
+        {% endif %}
+
+    </div>
+</section>
+
 {% endblock %}

@@ -1,0 +1,99 @@
+
+{% extends "core/base.html" %}
+{% load static %}
+{% load essay_extras %}
+
+{% block title %}{{ essay.title }} — Neuroscience Study Circle{% endblock %}
+
+{% block extra_head %}
+<script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true
+        },
+        options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+    };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{% endblock %}
+
+{% block content %}
+<article class="essay-detail">
+
+    <header class="essay-detail-header">
+        <div class="container essay-detail-container">
+
+            <a href="{% url 'essays' %}" class="essay-back-link">
+                ← All essays
+            </a>
+
+            <p class="eyebrow">BLOG &amp; ESSAYS</p>
+
+            <h1>{{ essay.title }}</h1>
+
+            {% if essay.excerpt %}
+                <p class="essay-detail-excerpt">{{ essay.excerpt }}</p>
+            {% endif %}
+
+            <div class="essay-detail-byline">
+                <span>
+                    By
+                    <a href="{% url 'member_detail' essay.author.slug %}">
+                        {{ essay.author.name }}
+                    </a>
+                </span>
+
+                {% if essay.published_at %}
+                    <span>
+                        <time datetime="{{ essay.published_at|date:'c' }}">
+                            {{ essay.published_at|date:"j F Y" }}
+                        </time>
+                    </span>
+                {% endif %}
+
+                <span>{{ essay.reading_time }} min read</span>
+            </div>
+
+            {% with groups=essay.subgroups.all %}
+                {% if groups %}
+                    <div class="essay-tags essay-detail-tags">
+                        {% for subgroup in groups %}
+                            <a href="{% url 'subgroup_detail' subgroup.slug %}">
+                                {{ subgroup.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+        </div>
+    </header>
+
+    {% if essay.featured_image %}
+        <div class="container essay-cover-container">
+            <img
+                class="essay-detail-cover"
+                src="{{ essay.featured_image.url }}"
+                alt="{{ essay.title }}"
+            >
+        </div>
+    {% endif %}
+
+    <div class="container essay-detail-container">
+        <div class="essay-body markdown-content">
+            {{ essay.content|render_markdown }}
+        </div>
+
+        <footer class="essay-detail-footer">
+            <a href="{% url 'essays' %}" class="essay-back-link">
+                ← Back to all essays
+            </a>
+        </footer>
+    </div>
+
+</article>
+{% endblock %}

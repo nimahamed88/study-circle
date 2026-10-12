@@ -1,0 +1,103 @@
+
+{% extends "core/base.html" %}
+
+{% block title %}Blog & Essays — Neuroscience Study Circle{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <p class="eyebrow">IDEAS · RESEARCH · REFLECTION</p>
+        <h1>Blog & Essays</h1>
+        <p>
+            Essays exploring the mind, brain, physics, and the questions
+            that emerge when disciplines meet.
+        </p>
+    </div>
+</section>
+
+<section class="essays-section">
+    <div class="container">
+        {% if essays %}
+            <div class="essays-grid">
+                {% for essay in essays %}
+                    <article class="essay-card">
+                        <a
+                            href="{% url 'essay_detail' essay.slug %}"
+                            class="essay-card-image-link"
+                            aria-label="Read {{ essay.title }}"
+                        >
+                            {% if essay.featured_image %}
+                                <img
+                                    class="essay-card-image"
+                                    src="{{ essay.featured_image.url }}"
+                                    alt="{{ essay.title }}"
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <div class="essay-card-image essay-image-placeholder">
+                                    <span>NEUROSCIENSEMBLE</span>
+                                </div>
+                            {% endif %}
+                        </a>
+
+                        <div class="essay-card-body">
+                            <div class="essay-meta">
+                                {% if essay.published_at %}
+                                    <time datetime="{{ essay.published_at|date:'c' }}">
+                                        {{ essay.published_at|date:"j F Y" }}
+                                    </time>
+                                    <span>·</span>
+                                {% endif %}
+                                <span>{{ essay.reading_time }} min read</span>
+                            </div>
+
+                            <h2>
+                                <a href="{% url 'essay_detail' essay.slug %}">
+                                    {{ essay.title }}
+                                </a>
+                            </h2>
+
+                            {% if essay.excerpt %}
+                                <p class="essay-excerpt">{{ essay.excerpt }}</p>
+                            {% endif %}
+
+                            <p class="essay-author">
+                                By
+                                <a href="{% url 'member_detail' essay.author.slug %}">
+                                    {{ essay.author.name }}
+                                </a>
+                            </p>
+
+                            {% if essay.subgroups.all %}
+                                <div class="essay-tags">
+                                    {% for subgroup in essay.subgroups.all %}
+                                        <a href="{% url 'subgroup_detail' subgroup.slug %}">
+                                            {{ subgroup.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <a
+                                class="essay-read-more"
+                                href="{% url 'essay_detail' essay.slug %}"
+                            >
+                                Read essay →
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="essays-empty">
+                <p class="eyebrow">COMING INTO FOCUS</p>
+                <h2>Our first essays are taking shape.</h2>
+                <p>
+                    This space will bring together original writing,
+                    scientific ideas, and reflections from our community.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

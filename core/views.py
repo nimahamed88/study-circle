@@ -5,8 +5,7 @@ from django.utils import timezone
 from django.utils.timezone import localtime
 from django.http import HttpResponse
 from django.urls import reverse
-from .models import Session, Speaker, Subgroup
-
+from .models import Session, Speaker, Subgroup, Essay
 
 
 def home(request):
@@ -18,13 +17,23 @@ def home(request):
         .first()
     )
 
+    latest_essays = (
+        Essay.objects
+        .filter(status="published")
+        .select_related("author")
+        .prefetch_related("subgroups")
+        .order_by("-published_at", "-created_at")[:2]
+    )
+
     return render(
         request,
         "core/home.html",
         {
             "next_session": next_session,
+            "latest_essays": latest_essays,
         },
     )
+
 
 def calendar_feed(request):
     sessions = (
@@ -265,6 +274,7 @@ def members(request):
     )
 
 
+
 def member_detail(request, slug):
     member = get_object_or_404(
         Speaker,
@@ -273,14 +283,23 @@ def member_detail(request, slug):
 
     sessions = member.sessions.all()
 
+    essays = (
+        member.essays
+        .filter(status="published")
+        .prefetch_related("subgroups")
+        .order_by("-published_at", "-created_at")
+    )
+
     return render(
         request,
         "core/member_detail.html",
         {
             "member": member,
             "sessions": sessions,
+            "essays": essays,
         },
     )
+
 def subgroups(request):
     subgroups = Subgroup.objects.select_related(
         "head"
@@ -297,6 +316,7 @@ def subgroups(request):
     )
 
 
+
 def subgroup_detail(request, slug):
     subgroup = get_object_or_404(
         Subgroup.objects.select_related("head").prefetch_related("members"),
@@ -305,14 +325,58 @@ def subgroup_detail(request, slug):
 
     sessions = subgroup.sessions.prefetch_related("speakers", "subgroups")
 
+    essays = (
+        subgroup.essays
+        .filter(status="published")
+        .select_related("author")
+        .order_by("-published_at", "-created_at")
+    )
+
     return render(
         request,
         "core/subgroup_detail.html",
         {
             "subgroup": subgroup,
             "sessions": sessions,
+            "essays": essays,
         },
     )
 
+
 def contact(request):
     return render(request, "core/contact.html")
+
+def essays(request):
+    published_essays = (
+        Essay.objects
+        .filter(status="published")
+        .select_related("author")
+        .prefetch_related("subgroups")
+        .order_by("-published_at", "-created_at")
+    )
+
+    return render(
+        request,
+        "core/essays.html",
+        {
+            "essays": published_essays,
+        },
+    )
+
+
+def essay_detail(request, slug):
+    essay = get_object_or_404(
+        Essay.objects
+        .filter(status="published")
+        .select_related("author")
+        .prefetch_related("subgroups"),
+        slug=slug,
+    )
+
+    return render(
+        request,
+        "core/essay_detail.html",
+        {
+            "essay": essay,
+        },
+    )

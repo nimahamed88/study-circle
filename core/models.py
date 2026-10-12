@@ -186,3 +186,72 @@ class SessionResource(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Essay(models.Model):
+    STATUS_CHOICES = [
+        ("draft", "Draft"),
+        ("published", "Published"),
+    ]
+
+    title = models.CharField(max_length=250)
+
+    slug = models.SlugField(unique=True)
+
+    author = models.ForeignKey(
+        Speaker,
+        on_delete=models.PROTECT,
+        related_name="essays",
+    )
+
+    excerpt = models.TextField(
+        blank=True,
+        help_text="A short introduction displayed in essay previews.",
+    )
+    featured_image = models.ImageField(
+    upload_to="essays/covers/",
+    blank=True,
+    null=True,
+    help_text="Optional cover image for the essay.",
+)
+    content = models.TextField(
+        help_text=(
+            "Write in Markdown. Use $...$ for inline LaTeX "
+            "and $$...$$ for display equations."
+        ),
+    )
+
+    subgroups = models.ManyToManyField(
+        Subgroup,
+        blank=True,
+        related_name="essays",
+    )
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="draft",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    published_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["-published_at", "-created_at"]
+        verbose_name = "Essay"
+        verbose_name_plural = "Essays"
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def reading_time(self):
+        word_count = len(self.content.split())
+        return max(1, (word_count + 199) // 200)
+
